@@ -8,11 +8,11 @@ from sklearn.decomposition import PCA, FastICA
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import r2_score
 
-def predict(train, test, disable=False):
+def predict(name, train, test, disable=False):
 	if disable:
-		print('XGB Model disabled')
+		print(name, 'disabled')
 		return (np.zeros((train.shape[0],)), np.zeros((test.shape[0],)))
-	print('Training XGB Model')
+	print('Training', name)
 	n_comp = 12
 
 	# tSVD
@@ -79,7 +79,7 @@ def predict(train, test, disable=False):
 	y_pred_test = model.predict(dtest)
 	y_pred_train = model.predict(dtrain)
 
-	print('XGB R2 score on train data:')
+	print(name, 'R2 score on train data:')
 	print(r2_score(y_train, y_pred_train))
 
 	return (y_pred_train, y_pred_test)

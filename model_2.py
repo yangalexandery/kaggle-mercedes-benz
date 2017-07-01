@@ -9,9 +9,6 @@ from sklearn.pipeline import make_pipeline, make_union
 from sklearn.utils import check_array
 from sklearn.metrics import r2_score
 
-import warnings
-warnings.filterwarnings('ignore', category=DeprecationWarning)
-warnings.filterwarnings('ignore', category=UserWarning)
 
 class StackingEstimator(BaseEstimator, TransformerMixin):
     
@@ -34,11 +31,11 @@ class StackingEstimator(BaseEstimator, TransformerMixin):
         return X_transformed
 
 
-def predict(train, test, disable=False):
+def predict(name, train, test, disable=False):
 	if disable:
-		print('Stacked Model 1 disabled')
+		print(name, 'disabled')
 		return (np.zeros((train.shape[0],)), np.zeros((test.shape[0],)))
-	print('Training Stacked Model 1')
+	print('Training', name)
 
 	stacked_pipeline = make_pipeline(
 	    StackingEstimator(estimator=LassoLarsCV(normalize=True, verbose=False)),
@@ -51,7 +48,7 @@ def predict(train, test, disable=False):
 	y_pred_test = stacked_pipeline.predict(test)
 	y_pred_train = stacked_pipeline.predict(train.drop('y', axis=1))
 
-	print('Stacked Model 1 R2 score on train data:')
+	print(name, 'R2 score on train data:')
 	print(r2_score(y_train, y_pred_train))
 
 	return (y_pred_train, y_pred_test)

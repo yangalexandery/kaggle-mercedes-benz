@@ -1,0 +1,50 @@
+3: 0.62897
+4: 0.63034
+5: 0.63576
+6: 0.66206	0.6833 (0, 1), 0.65874 (1, 0)
+
+1: train 0.66558
+	-0.68326
+	-0.58334
+	-0.60147
+2: train 0.66676
+	-0.68326
+	-0.60113
+3: train 0.66573
+
+4: train 0.67377
+	-0.68952
+	-0.60590
+
+5: 0.67477
+	-0.68326
+	-0.58352
+	-0.63710
+	-0.68600
+
+6: 0.66802
+	-0.68326
+	-0.58368
+	-0.60208
+	-0.68600
+0.56777 on LB
+
+//todo: improve both stacking
+//rely on cross-validation
+// model_3 is overfitting
+
+benchmark:
+about -69.7
+
+7: mean val: -69.12882
+
+useless columns removed: -69.65583
+control: -70.25364
+features removed: -69.37655
+both: -68.74543
+
+8: .3/.3/.4 split with noX0 replacements
+	-score 1: -69.25741
+	-score 2: -69.00942
+	-score 3: -69.41994
+	-mix: -68.77852

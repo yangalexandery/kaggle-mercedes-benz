@@ -16,5 +16,5 @@ class ModelMix(BaseEstimator, ClassifierMixin):
 	def predict(self, test):
 		y_pred = np.zeros((test.shape[0],))
 		for i in range(len(self.models)):
-			y_pred += models[i].predict(test.copy()) * proportions[i]
+			y_pred += self.models[i].predict(test.copy()) * self.proportions[i]
 		return y_pred

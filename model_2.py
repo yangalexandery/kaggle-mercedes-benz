@@ -18,6 +18,7 @@ class StackingEstimator(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None, **fit_params):
         self.estimator.fit(X, y, **fit_params)
         return self
+
     def transform(self, X):
         X = check_array(X)
         X_transformed = np.copy(X)
@@ -30,6 +31,33 @@ class StackingEstimator(BaseEstimator, TransformerMixin):
 
         return X_transformed
 
+
+class Model2(BaseEstimator, TransformerMixin):
+
+	def __init__(self, disable=False):
+		self.name = 'Stacked Model 1'
+		self.disable = disable
+
+	def fit(self, train, y_train):
+		if self.disable:
+			print(self.name, 'disabled')
+			return
+		train = train.copy()
+		y_train = y_train.copy()
+		print('Training', self.name)
+
+		self.model = make_pipeline(
+		    StackingEstimator(estimator=LassoLarsCV(normalize=True, verbose=False)),
+		    StackingEstimator(estimator=GradientBoostingRegressor(learning_rate=0.001, loss="huber", max_depth=4, max_features=0.55, min_samples_leaf=18, min_samples_split=14, subsample=0.7)),
+		    LassoLarsCV(verbose=False)
+		)
+
+		self.model.fit(train, y_train)
+
+	def predict(self, test):
+		if self.disable or not self.model:
+			return np.zeros((test.shape[0],))
+		return self.model.predict(test)
 
 def predict(name, train, test, disable=False):
 	if disable:

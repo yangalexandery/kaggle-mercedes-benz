@@ -6,7 +6,37 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from mlxtend.regressor import StackingRegressor
 from sklearn.metrics import r2_score
+from sklearn.base import BaseEstimator, TransformerMixin
 
+class Model3(BaseEstimator, TransformerMixin):
+
+	def __init__(self, disable=False):
+		self.name = 'Stacked Model 2'
+		self.disable = disable
+
+	def fit(self, train, y_train):
+		if self.disable:
+			print(self.name, 'disabled')
+			return
+		print('Training', self.name)
+
+		train = train.copy()
+		y_train = y_train.copy()
+
+		random_forest = RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)
+		model_elastic = ElasticNetCV(l1_ratio=[.1, .4, .5, .6, .7, .8, .9, .95, .99, 1], cv=5)
+		model_lasso = LassoCV(alphas = [1, 0.1, 0.001, 0.0001, 0.0005], cv=5, verbose=False)
+		tree_model = ExtraTreesRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=5)
+
+		self.model = StackingRegressor(regressors=[random_forest, model_lasso, model_elastic], 
+		                           meta_regressor=tree_model)
+		
+		self.model.fit(train, y_train)
+
+	def predict(self, test):
+		if self.disable or not self.model:
+			return np.zeros((test.shape[0],))
+		return self.model.predict(test)
 
 def predict(name, train, test, disable=False):
 	if disable:

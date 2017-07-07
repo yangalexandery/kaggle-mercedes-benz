@@ -1,19 +1,23 @@
-import numpy as np
-import pandas as pd
-
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn import preprocessing
 import xgboost as xgb
-from sklearn.preprocessing import MaxAbsScaler
+from sklearn.preprocessing import LabelEncoder, MaxAbsScaler
 from sklearn.random_projection import GaussianRandomProjection
 from sklearn.random_projection import SparseRandomProjection
 from sklearn.decomposition import PCA, FastICA
 from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics import r2_score
-from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.linear_model import ElasticNetCV
+from sklearn.pipeline import make_pipeline, make_union
+from sklearn.base import BaseEstimator,TransformerMixin, ClassifierMixin
 
-class Model1(BaseEstimator, ClassifierMixin):
+
+class ModelTest(BaseEstimator, ClassifierMixin):
 
 	def __init__(self, disable=False):
-		self.name = 'XGB Model'
+		self.name = 'ElasticNetCV Model'
 		self.disable = disable
 
 	def transform(self, data):
@@ -30,28 +34,15 @@ class Model1(BaseEstimator, ClassifierMixin):
 		print('Training', self.name)
 		train = self.transform(train.copy())
 		y_train = y_train.copy()
-		y_mean = np.mean(y_train)
 
-		xgb_params = {
-		    'n_trees': 500, 
-		    'eta': 0.0025,
-		    'max_depth': 3,
-		    'subsample': 0.7,
-		    'objective': 'reg:linear',
-		    'eval_metric': 'rmse',
-		    'base_score': y_mean, # base prediction = mean(target)
-		    'silent': 1,
-		    'alpha': 0.3,
-		    'lambda': 2
-		}
-		dtrain = xgb.DMatrix(train, y_train)
-
-		num_boost_rounds = 1250
-
-		self.model = xgb.train(dict(xgb_params, silent=1), dtrain, num_boost_round=num_boost_rounds)
+		self.model = make_pipeline(
+			# MaxAbsScaler(), 
+			ElasticNetCV(l1_ratio=1.0, tol=0.0001)
+		)
+		self.model.fit(train, y_train)
 
 	def predict(self, test):
 		if self.disable or not self.model:
 			return np.zeros((test.shape[0],))
 		test = self.transform(test.copy())
-		return self.model.predict(xgb.DMatrix(test))
+		return self.model.predict(test)

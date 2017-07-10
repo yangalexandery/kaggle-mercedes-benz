@@ -6,13 +6,10 @@ warnings.filterwarnings('ignore', category=RuntimeWarning)
 import numpy as np
 import pandas as pd
 
-from sklearn.preprocessing import LabelEncoder, MaxAbsScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import r2_score, mean_squared_error, make_scorer
 from sklearn.model_selection import cross_val_score
-import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
 
-# import model_1, model_2, model_3
 from model_1 import Model1
 from model_2 import Model2
 from model_3 import Model3
@@ -24,11 +21,6 @@ from model_test import ModelTest
 
 train = pd.read_csv('./data/mercedes_benz_train.csv').iloc[:-32].sample(frac=1).reset_index(drop=True)
 test = pd.read_csv('./data/mercedes_benz_test.csv')
-
-# train = train.drop(train['y'] > 200, axis=0)
-# train['y'][train['y'] > 175.0] = 175.0
-# train = train[train['X4'] == 'd']
-# train = train[:-32]
 
 def transformX0(cat):
     groups = [
@@ -50,8 +42,6 @@ test_untouched = test.copy()
 
 train['X0'] = train['X0'].transform(transformX0)
 test['X0'] = test['X0'].transform(transformX0)
-# untouched_y = train['y']
-# train['y'] = np.log(train['y'])
 
 hold_y = train['y']
 df_all = pd.concat([train, test]).drop(['y', 'X4'], axis=1)
@@ -68,13 +58,9 @@ for col in df_numeric:
 
 cols = df_obj.columns.values.tolist()
 for col in cols:
-    # print(col)
-    # print(pd.get_dummies(df_obj[col], prefix=col).shape)
-    # print(pd.get_dummies(df_obj[col], prefix=col).head())
     df_obj = pd.concat([df_obj, pd.get_dummies(df_obj[col], prefix=col)], axis=1)
     # df_obj[col] = pd.factorize(df_obj[col])[0]
     df_obj = df_obj.drop(col, axis=1)
-# print(df_obj.head())
 
 
 #remove duplicates in df_numeric
@@ -109,12 +95,6 @@ test = df_values.iloc[train.shape[0]:].copy()
 print("Blah", train.shape, " ", test.shape)
 
 
-# train a model without X0, for the rows with X0 unclustered
-# train_noX0 = train.copy().drop('X0', axis=1)
-# test_noX0 = test.copy().drop('X0', axis=1)
-
-# train_ = train[train.y < 200].copy()
-# print(train_.shape)
 ys = train['y'].values
 y_mean = np.sum(ys)/len(ys)
 SS = np.sum(np.power(ys - y_mean, 2))
@@ -204,72 +184,6 @@ scores_5 = cross_val_score(m5, train.drop(['y'], axis=1).copy(), train['y'], sco
 print('Average (scores_5):', sum(scores_5)/len(scores_5))
 print('R2 score:', oof_r2(scores_5))
 
-# testing with classifying outliers
-# y_diff = train['y'] - y_train_4
-# print('Num above 10:', len(train['y'][y_diff > 10]))
-# outlier_status = np.zeros(train['y'].shape)
-# outlier_status[y_diff >= 10] = 1
-# outlier_status[y_diff < 10] = 0
-# mtest = ModelTest()
-# mtest.fit(train.drop(['y'], axis=1).copy(), outlier_status)
-# y_train_test = mtest.predict(train.drop(['y'], axis=1).copy())
-# print(sum(y_train_test), " ", y_train_test[:50])
-# print('Model Outlier:')
-# m_outlier = ModelOutlier()
-# m_outlier.fit(train.drop(['y'], axis=1)[y_diff < 15].copy(), train['y'][y_diff < 15])
-# y_train_outlier = m_outlier.predict(train.drop(['y'], axis=1).copy())
-# outlier_min = min(y_train_outlier)
-# outlier_max = max(y_train_outlier)
-# color = [str(((item - outlier_min)/(outlier_max - outlier_min))) for item in y_train_outlier]
-# print(color[:100])
-
-# y_diff = train['y'] - y_train_4
-# m1 = Model1()
-# m1.fit(train.drop(['y'], axis=1).copy(), y_diff)
-# y_train_1 = m1.predict(train.drop(['y'], axis=1).copy())
-# print(mean_squared_error(train['y'], y_train_4 + y_train_1))
-
-# TSNE stuff
-# features = ['X118',
-#             'X127',
-#             'X47',
-#             'X315',
-#             'X311',
-#             'X179',
-#             'X314',
-# ### added by Tilii
-#             'X232',
-#             'X29',
-#             'X263',
-# ###
-#             'X261']
-# tsne = TSNE(random_state=2016,perplexity=50,verbose=2)
-# x = tsne.fit_transform(pd.concat([train_untouched[features],test_untouched[features]]))
-# x = pd.read_csv('data/tsne_transform.csv')
-# mtest = ModelTest()
-# vis = x[:train_untouched.shape[0]]
-# mtest.fit(vis, train_untouched['y'])
-# scores_tsne = cross_val_score(mtest, vis.copy(), train_untouched['y'], scoring=two_scorer(), cv=5)
-# print(scores_tsne)
-# print('Average (scores_tsne):', sum(scores_tsne)/len(scores_tsne))
-# print('R2 score:', oof_r2(scores_tsne))
-# mtest = ModelTest()
-# mtest.fit(train.drop(['y'], axis=1).copy().iloc[:3000], train['y'].copy()[:3000])
-# y_train_test = mtest.predict(train.drop(['y'], axis=1).copy().iloc[:3000])
-
-
-# blue_points = [i for i in range(len(train['y'][:3000])) if y_train_test[i] <= 0.5]
-# red_points = [i for i in range(len(train['y'][:3000])) if y_train_test[i] > 0.5]
-# # print(len(blue_points), " ", len(red_points))
-# # plt.plot(train['y'], y_train_4)
-# tmp = np.polyfit(train['y'], y_train_4, deg=1)
-# plt.plot(train['y'], tmp[0] * train['y'] + tmp[1], color='black')
-# # plt.scatter(train['y'], y_train_4, s=150, color=color)
-# plt.scatter([train['y'][i] for i in blue_points], [y_train_4[i] for i in blue_points], color='blue')
-# plt.scatter([train['y'][i] for i in red_points], [y_train_4[i] for i in red_points], color='red')
-# plt.xlabel('y_true')
-# plt.ylabel('y_pred')
-# plt.show()
 
 print('Model Mix:')
 m_mix = ModelMix([Model1(), Model2(), Model3(), Model4(), Model5()], [0.2, 0.2, 0.2, 0.2, 0.2])
@@ -295,7 +209,7 @@ print('Average (scores_mix):', sum(scores_mix)/len(scores_mix))
 print('R2 score:', oof_r2(scores_mix))
 
 
-file_path = 'data/mercedes_benz_submission_21.csv'
+file_path = 'data/mercedes_benz_submission_22.csv'
 
 sub = pd.DataFrame()
 sub['ID'] = test['ID'].values

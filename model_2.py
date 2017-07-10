@@ -35,10 +35,13 @@ class StackingEstimator(BaseEstimator, TransformerMixin):
 class Model2(BaseEstimator, TransformerMixin):
 
 	def __init__(self, disable=False):
-		self.name = 'Stacked Model 1'
+		self.name = 'RandomForest Model'
 		self.disable = disable
 
 	def transform(self, data):
+		features = ['X127', 'X136', 'X263', 'X29', 'X47', 'X54', 'X0_0', 'X0_2', 'X0_4', 'X0_6', 'X339', 'X189']
+
+		data = data[features]
 		if not hasattr(self, 'scaler'):
 			self.scaler = MaxAbsScaler().fit(data)
 		data = pd.DataFrame(self.scaler.transform(data))			
@@ -53,18 +56,25 @@ class Model2(BaseEstimator, TransformerMixin):
 		y_train = y_train.copy()
 		print('Training', self.name)
 
-		self.model = make_pipeline(
+		self.model = RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)
+		# self.model = make_pipeline(
 		    # StackingEstimator(estimator=RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)),
 		    # StackingEstimator(estimator=GradientBoostingRegressor(learning_rate=0.001, loss="huber", max_depth=3, max_features=0.55, min_samples_leaf=18, min_samples_split=14, subsample=0.7)),
-		    StackingEstimator(estimator=ElasticNetCV(l1_ratio=1.0, tol=0.0001)),
+		    # StackingEstimator(estimator=ElasticNetCV(l1_ratio=1.0, tol=0.0001)),
 		    # MaxAbsScaler(),
 		    # StackingEstimator(estimator=LassoLarsCV(normalize=True, verbose=False)),
 		    # LassoLarsCV()
-		    RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=3)
+		    # RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)
 			# ExtraTreesRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)
-		)
+		# )
+		# self.model = RidgeCV(alphas = [1, 5, 10, 20, 50, 100, 200, 500], fit_intercept=True, cv=5)
+		# self.model = RandomForestRegressor(n_estimators=20, oob_score=True, bootstrap=True, max_depth=4)
 
 		self.model.fit(train, y_train)
+		# print(self.model.feature_importances_)
+		# for i in range(train.shape[1]):
+		# 	if self.model.feature_importances_[i] > 0.005:
+		# 		print(train.columns.values[i], " ", self.model.feature_importances_[i])
 
 	def predict(self, test):
 		if self.disable or not self.model:

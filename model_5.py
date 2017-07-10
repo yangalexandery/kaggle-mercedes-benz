@@ -17,7 +17,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 
 # large standard dev in CV
-class ModelTest(BaseEstimator, ClassifierMixin):
+class Model5(BaseEstimator, ClassifierMixin):
 
 	def __init__(self, disable=False):
 		self.name = 'DecisionTreeRegressor Model'
@@ -94,12 +94,12 @@ class ModelTest(BaseEstimator, ClassifierMixin):
 		for tree in self.model.estimators_:
 			tot += tree.feature_importances_
 		# print(tot)
-		asdf = []
-		for i in range(len(train.columns)):
-			if tot[i] > 0.1:
+		# asdf = []
+		# for i in range(len(train.columns)):
+			# if tot[i] > 0.1:
 				# print("    ", train.columns.values[i], self.model.coef_[i])
-				asdf.append(train.columns.values[i])
-		print(asdf)
+				# asdf.append(train.columns.values[i])
+		# print(asdf)
 		# print(self.model.estimators_[0].feature_importances_)
                                        
 	def predict(self, test):

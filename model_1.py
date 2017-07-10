@@ -21,6 +21,9 @@ class Model1(BaseEstimator, ClassifierMixin):
 			self.scaler = MaxAbsScaler().fit(data)
 		data = pd.DataFrame(self.scaler.transform(data))			
 
+		features = [426, 398, 223, 0, 87, 305, 193, 408, 436, 18, 7, 146, 265, 306, 189, 36, 314, 92, 27]
+		# features = [398, 223, 0, 87, 305, 193, 408, 146, 265, 306, 189, 36, 314, 27]
+		data = data[features]            
 		return data
 
 	def fit(self, train, y_train):
@@ -35,20 +38,30 @@ class Model1(BaseEstimator, ClassifierMixin):
 		xgb_params = {
 		    'n_trees': 500, 
 		    'eta': 0.0025,
-		    'max_depth': 3,
-		    'subsample': 0.7,
+		    'max_depth': 4,
+		    'subsample': 0.6,
 		    'objective': 'reg:linear',
 		    'eval_metric': 'rmse',
 		    'base_score': y_mean, # base prediction = mean(target)
 		    'silent': 1,
-		    'alpha': 0.3,
-		    'lambda': 2
+		    # 'alpha': 0.001,
+		    # 'lambda': 2,
+		    'gamma': 40
+		    # 'alpha': 0.1,
+		    # 'lambda': 2,
+		    # 'gamma': 50
 		}
 		dtrain = xgb.DMatrix(train, y_train)
 
 		num_boost_rounds = 1250
 
 		self.model = xgb.train(dict(xgb_params, silent=1), dtrain, num_boost_round=num_boost_rounds)
+		vals = self.model.get_score()
+		# print(vals)
+		# print(self.model.get_score())
+		# for key in vals:
+			# if vals[key] > 70:
+			# print(key, vals[key])
 
 	def predict(self, test):
 		if self.disable or not self.model:

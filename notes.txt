@@ -87,3 +87,35 @@ Model 4 CV: 0.57122, 69.686
 	Model 2 OOF: 0.56745
 	Model 3 OOF: 0.56995
 	Model 4 OOF: 0.56829
+
+16: .2/.2/.3/.3 split
+	Mix OOF: 
+
+//todo: figure out why CV always seems worse when all run at once
+
+17: repeat, X4 dropped
+
+18: feature engineering, selecting only top features
+	-.34/.33/.33 split for m1/m2/m4
+
+19: .3/.2/.3/.2 split
+	-Mix: 0.5766
+	-Model 1: 0.5731
+	-Model 2: 0.5733
+	-Model 3: 0.5735
+	-Model 4: 0.5723
+
+Added DecisionTreeRegressor
+
+20: .2/.2/.2/.2/.2 split
+	-Model 1: 0.5715
+	-Model 2: 0.5724
+	-Model 3: 0.5743
+	-Model 4: 0.5721
+	-Model 5: 0.5732
+	-Mix: 0.5777
+* FINAL SUBMISSION *
+
+21: .15/.2/.3/.2/.15 split
+performed about the same
+* FINAL SUBMISSION *

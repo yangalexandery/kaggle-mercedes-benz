@@ -1,18 +1,10 @@
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 from sklearn import preprocessing
-import xgboost as xgb
-from sklearn.preprocessing import LabelEncoder, MaxAbsScaler
-from sklearn.random_projection import GaussianRandomProjection
-from sklearn.random_projection import SparseRandomProjection
-from sklearn.decomposition import PCA, FastICA
-from sklearn.decomposition import TruncatedSVD
+from sklearn.preprocessing import MaxAbsScaler
 from sklearn.linear_model import ElasticNetCV
-from sklearn.pipeline import make_pipeline, make_union
-from sklearn.base import BaseEstimator,TransformerMixin, ClassifierMixin
-from model_test import ModelTest
+from sklearn.base import BaseEstimator, ClassifierMixin
 
 class Model4(BaseEstimator, ClassifierMixin):
 
@@ -62,9 +54,6 @@ class Model4(BaseEstimator, ClassifierMixin):
 
         # train['outlier'] = m_test.predict()
 
-        # self.model = make_pipeline(
-            # ElasticNetCV(l1_ratio=1.0, tol=0.0001)
-        # )
         # self.model = ElasticNetCV(l1_ratio=1.0, tol=0.0001)
         # self.model.fit(train, y_train)
 

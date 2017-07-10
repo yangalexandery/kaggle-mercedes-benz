@@ -1,19 +1,10 @@
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 from sklearn import preprocessing
-import xgboost as xgb
-from sklearn.preprocessing import LabelEncoder, MaxAbsScaler
-from sklearn.random_projection import GaussianRandomProjection
-from sklearn.random_projection import SparseRandomProjection
-from sklearn.decomposition import PCA, FastICA
-from sklearn.decomposition import TruncatedSVD
-from sklearn.linear_model import ElasticNetCV, LogisticRegression
-from sklearn.pipeline import make_pipeline, make_union
-from sklearn.base import BaseEstimator,TransformerMixin, ClassifierMixin
-from sklearn.ensemble import RandomForestClassifier, BaggingRegressor
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import MaxAbsScaler
+from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.ensemble import BaggingRegressor
 from sklearn.tree import DecisionTreeRegressor
 
 # large standard dev in CV
@@ -83,12 +74,7 @@ class Model5(BaseEstimator, ClassifierMixin):
                            n_estimators=20,
                            bootstrap=True,
                            oob_score=True)
-		# self.model = ElasticNetCV(l1_ratio=1.0, tol=0.0001)
 
-		# self.model = make_pipeline(
-		# 	# MaxAbsScaler(), 
-		# 	ElasticNetCV(l1_ratio=1.0, tol=0.0001)
-		# )
 		self.model.fit(train, y_train)
 		tot = np.zeros((train.shape[1],))
 		for tree in self.model.estimators_:

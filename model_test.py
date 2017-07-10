@@ -1,7 +1,5 @@
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn import preprocessing
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder, MaxAbsScaler

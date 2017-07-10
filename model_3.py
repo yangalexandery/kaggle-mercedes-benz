@@ -5,10 +5,6 @@ from sklearn.preprocessing import MaxAbsScaler
 from sklearn.linear_model import ElasticNetCV, LassoCV, RidgeCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import ExtraTreesRegressor
-from mlxtend.regressor import StackingRegressor
-from sklearn.decomposition import PCA, FastICA
-from sklearn.metrics import r2_score
-from sklearn.pipeline import make_pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 from model_mix import ModelMix
 

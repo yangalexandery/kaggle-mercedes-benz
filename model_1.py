@@ -3,11 +3,6 @@ import pandas as pd
 
 import xgboost as xgb
 from sklearn.preprocessing import MaxAbsScaler
-from sklearn.random_projection import GaussianRandomProjection
-from sklearn.random_projection import SparseRandomProjection
-from sklearn.decomposition import PCA, FastICA
-from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics import r2_score
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 class Model1(BaseEstimator, ClassifierMixin):
